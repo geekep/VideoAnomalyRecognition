@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+c3d_out
+__pycache__
+*.pyc
+*.log
