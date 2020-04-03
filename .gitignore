@@ -4,3 +4,4 @@ c3d_out
 __pycache__
 *.pyc
 *.log
+*.pth

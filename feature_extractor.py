@@ -209,7 +209,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-'''
+'''bash
 python feature_extractor.py --dataset_path
     --annotation_path Train_Annotation.txt
     --annotation_path_test Test_Annotation.txt

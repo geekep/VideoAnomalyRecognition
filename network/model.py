@@ -103,8 +103,9 @@ class static_model(object):
         """
         # data = data.float().cuda(async=True)
         # target = target.cuda(async=True)
-        data = data.float().cuda()
-        target = target.cuda()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        data = data.float().to(device)
+        target = target.to(device)
         if self.net.training:
             input_var = torch.autograd.Variable(data, requires_grad=False)
             target_var = torch.autograd.Variable(target, requires_grad=False)

@@ -69,6 +69,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     set_logger(log_file=args.log_file, debug_mode=args.debug_mode)
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     torch.manual_seed(args.random_seed)
 
     train_loader = FeaturesLoader(features_path=args.features_path,
@@ -93,7 +95,7 @@ if __name__ == "__main__":
 
     network = AnomalyDetector()
     net = model(net=network,
-                criterion=RegularizedLoss(network, custom_objective).cuda(),
+                criterion=RegularizedLoss(network, custom_objective).to(device),
                 model_prefix=args.model_dir,
                 step_callback_freq=5,
                 save_checkpoint_freq=args.save_frequency,
