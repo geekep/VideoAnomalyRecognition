@@ -123,7 +123,8 @@ class static_model(object):
         return [output], [loss]
 
     def predict(self, data):
-        data = data.float().cuda()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        data = data.float().to(device)
         with torch.no_grad():
             input_var = torch.autograd.Variable(data)
         output = self.net(input_var)

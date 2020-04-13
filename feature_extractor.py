@@ -210,7 +210,8 @@ if __name__ == "__main__":
     main()
 
 '''bash
-python feature_extractor.py --dataset_path
+python feature_extractor.py 
+    --dataset_path data
     --annotation_path Train_Annotation.txt
     --annotation_path_test Test_Annotation.txt
     --pretrained_3d ./network/c3d.pickle
