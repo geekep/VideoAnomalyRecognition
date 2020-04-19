@@ -146,5 +146,4 @@ if __name__ == "__main__":
 python TrainingAnomalyDetector_public.py
     --features_path c3d_out
     --annotation_path Anomaly_Detection_splits/Train_Annotation.txt
-    --annotation_path_test Anomaly_Detection_splits/Test_Annotation.txt
 '''

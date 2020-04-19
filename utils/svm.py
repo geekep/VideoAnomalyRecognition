@@ -29,12 +29,16 @@ class mysvm():
         # preprocessing
         self.X_train = X_train
         self.X_test = X_test
-        self.y_train = label_binarize(y_train, classes=range(y_train.length))
-        self.y_test = label_binarize(y_test, classes=range(y_test.length))
+        self.y_train = y_train
+        self.y_test = y_test
+        # if y_train:
+        #     self.y_train = label_binarize(y_train, classes=range(len(y_train)))
+        # if y_test:
+        #     self.y_test = label_binarize(y_test, classes=range(len(y_test)))
 
     def train_svm(self):
         clf = svm.SVC(C=1.0, cache_size=200, class_weight=None, coef0=0.0,
-                      decision_function_shape='ovo', degree=3, gamma=5,
+                      decision_function_shape='ovo', degree=3, gamma='auto',
                       kernel='rbf', max_iter=-1, probability=True,
                       random_state=None, shrinking=True, tol=0.001,
                       verbose=False)

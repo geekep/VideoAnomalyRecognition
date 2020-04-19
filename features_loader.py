@@ -10,18 +10,30 @@ from torch.utils import data
 from feature_extractor import read_features
 
 
+def read_label(feature_subpath, classid_path):
+    with open(classid_path, 'r') as f:
+        lines = f.read().splitlines(keepends=False)
+        for line in lines:
+            items = line.split()
+            if items[0] in feature_subpath:
+                return int(items[1])
+    return None
+
+
 class FeaturesLoader(data.Dataset):
     def __init__(self,
                  features_path,
                  annotation_path,
                  name="<NO_NAME>",
-                 shuffle_list_seed=None):
+                 shuffle_list_seed=None,
+                 classid_path=None):
 
         super(FeaturesLoader, self).__init__()
         self.i = 0
         self.features_path = features_path
         self.rng = np.random.RandomState(shuffle_list_seed if shuffle_list_seed else 0)
         self.is_shuffled = shuffle_list_seed
+        self.classid_path = classid_path
         # load video list
         self.state = 'Normal'
         self.features_list_normal, self.features_list_anomaly = FeaturesLoader._get_features_list(
@@ -65,44 +77,48 @@ class FeaturesLoader(data.Dataset):
         return res
 
     def get_feature(self, index):
-        if self.state == 'Normal':  # Load a normal video
+        if self.state == 'Normal':  # load a normal video
             if len(self.features_list_normal) > 0:
                 idx = random.randint(0, len(self.features_list_normal) - 1)
                 feature_subpath = self.features_list_normal[idx].split(os.sep)
 
-            else:  # No normal videos, load an anomalous one
+            else:  # no normal video, load an anomalous one
                 idx = random.randint(0, len(self.features_list_anomaly) - 1)
                 feature_subpath = self.features_list_anomaly[idx].split(os.sep)
-        elif self.state == 'Anomalous':  # Load an anomalous video
+
+        elif self.state == 'Anomalous':  # load an anomalous video
             if len(self.features_list_anomaly) > 0:
                 idx = random.randint(0, len(self.features_list_anomaly) - 1)
                 feature_subpath = self.features_list_anomaly[idx].split(os.sep)
 
-            else:  # No anomalous videos, load a normal one
+            else:  # no anomalous video, load a normal one
                 idx = random.randint(0, len(self.features_list_normal) - 1)
                 feature_subpath = self.features_list_normal[idx].split(os.sep)
 
         features = read_features(dir=os.sep.join(feature_subpath[:-1]),
                                  video_name=feature_subpath[-1])
         if self.state == 'Normal':
-            #     self.normal_i += 1
+            self.normal_i += 1
             self.state = 'Anomalous'
         elif self.state == 'Anomalous':
-            #     self.anomalous_i += 1
+            self.anomalous_i += 1
             self.state = 'Normal'
 
         feature_subpath = os.sep.join(feature_subpath)
-        if "Normal" not in feature_subpath:
-            label = 1
+        if self.classid_path is None:
+            if "Normal" in feature_subpath:
+                label = 0
+            else:
+                label = 1
         else:
-            label = 0
+            label = read_label(feature_subpath, self.classid_path)
 
         return features, label
 
     @staticmethod
     def _get_features_list(features_path, annotation_path):
         assert os.path.exists(features_path)
-        v_id = 0
+        # v_id = 0
         features_list_normal = []
         features_list_anomaly = []
         with open(annotation_path, 'r') as f:
