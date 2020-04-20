@@ -14,12 +14,12 @@ import itertools
 
 def save_model(clf, src):
     joblib.dump(clf, src)
-    print("model has been saved to" + src)
+    print("model has been saved to " + src)
 
 
 def get_model(src):
     model = joblib.load(src)
-    print("model has been loaded" + src)
+    print("model has been loaded " + src)
     return model
 
 
@@ -66,15 +66,15 @@ class mysvm():
 
         acc_avg = np.mean(acc_for_each_class)
         print("average accuracy: %f" % acc_avg)
-        classification_rep = classification_report(self.y_test, y_predict,
-                                                   target_names=self.y_train)
-        print("classification report:\n", classification_rep)
+        # classification_rep = classification_report(self.y_test, y_predict,
+        #                                            target_names=self.y_train)
+        # print("classification report:\n", classification_rep)
 
         kappa = cohen_kappa_score(y_predict, self.y_test)
         print("kappa: %f" % kappa)
 
-        cm = confusion_matrix(self.y_test.argmax(axis=1), y_predict.argmax(axis=1))
-        print("confusion metrix:\n", cm)
+        # cm = confusion_matrix(self.y_test.argmax(axis=1), y_predict.argmax(axis=1))
+        # print("confusion metrix:\n", cm)
 
         return y_predict
 

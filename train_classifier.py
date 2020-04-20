@@ -17,7 +17,7 @@ parser.add_argument('--random-seed', type=int, default=1,
                     help='random seed (default: 1)')
 parser.add_argument('--model-dir', type=str, default="./exps/model",
                     help="set model dir.")
-parser.add_argument('--classid_path', type=str, default="ClassID.txt",
+parser.add_argument('--classid_path', type=str, default="ClassIDs.txt",
                     help="path to ClassID")
 
 if __name__ == "__main__":
@@ -55,22 +55,26 @@ if __name__ == "__main__":
     for features, label in tqdm(data_iter):
         # features is a batch where each item is a tensor of 32 4096D features
         features.to(device)
+        if label == 8:
+            continue
         with torch.no_grad():
             input_var = torch.autograd.Variable(features)
             outputs = net.predict(input_var)[0]  # (batch_size, 32)
             outputs = outputs.reshape(32).numpy()
             features = features.reshape(features.shape[1], features.shape[2]).numpy()
+
             for i in range(32):
                 if outputs[i] > threshold:
                     X.append(features[i])
                     y.append(label)
+
     # train classifier
-    clf = mysvm(X_train=X, y_train=y.ravel())
+    clf = mysvm(X_train=X, y_train=y)
     save_model(clf.train_svm(), './exps/svm.pkl')
 
 '''bash
 python train_classifier.py
     --features_path c3d_out
     --annotation_path Action_Regnition_splits/train_001.txt
-    --classid_path Action_Regnition_splits/test_001.txt
+    --classid_path Action_Regnition_splits/ClassIDs.txt
 '''

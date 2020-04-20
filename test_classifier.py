@@ -19,7 +19,7 @@ parser.add_argument('--random-seed', type=int, default=1,
 parser.add_argument('--model-dir', type=str, default="./exps/model",
                     help="set model dir.")
 parser.add_argument('--classid_path', type=str, default="ClassIDs.txt",
-                    help="path to ClassID")
+                    help="path to ClassIDs")
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     X = []
     y = []
     threshold = 0.5
-    for features, start_end_couples, feature_subpaths, lengths in tqdm(data_iter):
+    for features, label in tqdm(data_iter):
         # features is a batch where each item is a tensor of 32 4096D features
         features.to(device)
         with torch.no_grad():
@@ -61,17 +61,15 @@ if __name__ == "__main__":
             outputs = net.predict(input_var)[0]  # (batch_size, 32)
             outputs = outputs.reshape(32).numpy()
             features = features.reshape(features.shape[1], features.shape[2]).numpy()
-            for i in range(32):
-                if outputs[i] > threshold:
-                    X.append(features[i])
-
+            X.append(features[np.argmax(outputs)])
+            y.append(label)
     # load classifier
     clf = get_model('./exps/svm.pkl')
-    mysvm(X_test=X, y_test=y.ravel()).predit()
+    mysvm(X_test=X, y_test=y).predit(clf)
 
 '''bash
 python test_classifier.py
     --features_path c3d_out
-    --annotation_path_test Anomaly_Detection_splits/Test_Annotation.txt
+    --annotation_path_test Action_Regnition_splits/test_001.txt
     --classid_path Action_Regnition_splits/ClassIDs.txt
 '''
