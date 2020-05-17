@@ -6,6 +6,7 @@ from tqdm import tqdm
 from features_loader import FeaturesLoader
 from network.anomaly_detector_model import AnomalyDetector, RegularizedLoss, custom_objective
 from network.model import static_model
+from utils.knn import myknn
 from utils.svm import mysvm, save_model
 
 parser = argparse.ArgumentParser(description="Train SVMs")
@@ -68,9 +69,13 @@ if __name__ == "__main__":
                     X.append(features[i])
                     y.append(label)
 
-    # train classifier
-    clf = mysvm(X_train=X, y_train=y)
-    save_model(clf.train_svm(), './exps/svm.pkl')
+    # train KNN classifier
+    clf = myknn(X_train=X, y_train=y)
+    save_model(clf.train_svm(), './exps/knn.pkl')
+
+    # train SVM classifier
+    # clf = mysvm(X_train=X, y_train=y)
+    # save_model(clf.train_svm(), './exps/svm.pkl')
 
 '''bash
 python train_classifier.py

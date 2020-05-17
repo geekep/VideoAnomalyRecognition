@@ -46,7 +46,7 @@ class mysvm():
         print(clf.score(self.X_train, self.y_train))
         return clf
 
-    def predit(self, clf):
+    def predict(self, clf):
         y_predict = clf.predict(pd.DataFrame(self.X_test))
         print(clf.score(self.X_test, self.y_test))
 

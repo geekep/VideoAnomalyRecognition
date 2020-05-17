@@ -63,9 +63,14 @@ if __name__ == "__main__":
             features = features.reshape(features.shape[1], features.shape[2]).numpy()
             X.append(features[np.argmax(outputs)])
             y.append(label)
-    # load classifier
-    clf = get_model('./exps/svm.pkl')
-    mysvm(X_test=X, y_test=y).predit(clf)
+
+    # load KNN classifier
+    clf = get_model('./exps/knn.pkl')
+    mysvm(X_test=X, y_test=y).predict(clf)
+
+    # load SVM classifier
+    # clf = get_model('./exps/svm.pkl')
+    # mysvm(X_test=X, y_test=y).predict(clf)
 
 '''bash
 python test_classifier.py
