@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     # train KNN classifier
     clf = myknn(X_train=X, y_train=y)
-    save_model(clf.train_svm(), './exps/knn.pkl')
+    save_model(clf.train_knn(), './exps/knn.pkl')
 
     # train SVM classifier
     # clf = mysvm(X_train=X, y_train=y)

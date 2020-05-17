@@ -7,6 +7,7 @@ from tqdm import tqdm
 from features_loader import FeaturesLoader
 from network.anomaly_detector_model import AnomalyDetector, RegularizedLoss, custom_objective
 from network.model import static_model
+from utils.knn import myknn
 from utils.svm import mysvm, get_model
 
 parser = argparse.ArgumentParser(description="Test SVMs")
@@ -66,7 +67,7 @@ if __name__ == "__main__":
 
     # load KNN classifier
     clf = get_model('./exps/knn.pkl')
-    mysvm(X_test=X, y_test=y).predict(clf)
+    myknn(X_test=X, y_test=y).predict(clf)
 
     # load SVM classifier
     # clf = get_model('./exps/svm.pkl')
