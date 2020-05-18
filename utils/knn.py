@@ -1,9 +1,10 @@
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.externals import joblib
+import itertools
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import itertools
+from sklearn.metrics import confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier
 
 
 class myknn():
@@ -18,6 +19,7 @@ class myknn():
         clf = KNeighborsClassifier(n_neighbors=k)
         clf.fit(self.X_train, self.y_train)
         print(clf.score(self.X_train, self.y_train))
+        self.clf = clf
         return clf
 
     def predict(self, clf):
@@ -27,20 +29,23 @@ class myknn():
         y_predict_proba = clf.predict_proba(self.X_test)
         print(y_predict_proba[:5])
         np.argmax(y_predict_proba, axis=1)[:5]
-
+        self.y_predict = y_predict
         return y_predict
 
-    def plot_confusion_matrix(self, cm, classes, normalize=False,
+    def plot_confusion_matrix(self, classes, normalize=False,
                               title='Confusion matrix',
                               cmap=plt.cm.Blues, path="graphs"):
         """
         input：
-            cm: confusion matrix,
             classes,
             title,
             cmap: color of map could be setup (https://matplotlib.org/examples/color/colormaps_reference.html),
             path: the path of saved confusion matrix
         """
+
+        cm = confusion_matrix(self.y_test, self.y_predict)
+        print("confusion metrix:\n", cm)
+
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             print("Normalized confusion matrix")

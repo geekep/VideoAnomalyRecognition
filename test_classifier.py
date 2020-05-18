@@ -1,4 +1,5 @@
 import argparse
+
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
@@ -8,7 +9,7 @@ from features_loader import FeaturesLoader
 from network.anomaly_detector_model import AnomalyDetector, RegularizedLoss, custom_objective
 from network.model import static_model
 from utils.knn import myknn
-from utils.svm import mysvm, get_model
+from utils.svm import get_model
 
 parser = argparse.ArgumentParser(description="Test SVMs")
 parser.add_argument('--features_path', default='out',
@@ -67,7 +68,9 @@ if __name__ == "__main__":
 
     # load KNN classifier
     clf = get_model('./exps/knn.pkl')
-    myknn(X_test=X, y_test=y).predict(clf)
+    knn = myknn(X_test=X, y_test=y)
+    knn.predict(clf)
+    knn.plot_confusion_matrix(classes=13)
 
     # load SVM classifier
     # clf = get_model('./exps/svm.pkl')

@@ -1,15 +1,13 @@
+import itertools
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn import svm
 from sklearn.externals import joblib
 from sklearn.metrics import accuracy_score, precision_score
 from sklearn.metrics import cohen_kappa_score
-from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
-from sklearn.preprocessing import label_binarize
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import itertools
 
 
 def save_model(clf, src):
@@ -44,7 +42,7 @@ class mysvm():
                       verbose=False)
         clf.fit(self.X_train, self.y_train)
         print(clf.score(self.X_train, self.y_train))
-        return clf
+        return self.clf
 
     def predict(self, clf):
         y_predict = clf.predict(pd.DataFrame(self.X_test))
@@ -73,22 +71,22 @@ class mysvm():
         kappa = cohen_kappa_score(y_predict, self.y_test)
         print("kappa: %f" % kappa)
 
-        # cm = confusion_matrix(self.y_test.argmax(axis=1), y_predict.argmax(axis=1))
-        # print("confusion metrix:\n", cm)
+        return self.y_predict
 
-        return y_predict
-
-    def plot_confusion_matrix(self, cm, classes, normalize=False,
+    def plot_confusion_matrix(self, classes, normalize=False,
                               title='Confusion matrix',
                               cmap=plt.cm.Blues, path="graphs"):
         """
         input：
-            cm: confusion matrix,
             classes,
             title,
             cmap: color of map could be setup (https://matplotlib.org/examples/color/colormaps_reference.html),
             path: the path of saved confusion matrix
         """
+
+        cm = confusion_matrix(self.y_test.argmax(axis=1), self.y_predict.argmax(axis=1))
+        print("confusion metrix:\n", cm)
+
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
             print("Normalized confusion matrix")
